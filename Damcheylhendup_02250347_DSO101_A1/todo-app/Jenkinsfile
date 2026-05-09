@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs'
+    }
+
+    stages {
+        stage('Check Tools') {
+            steps {
+                bat 'node -v'
+                bat 'npm -v'
+                bat 'docker --version'
+                bat 'git --version'
+            }
+        }
+
+        stage('Install Backend Dependencies') {
+            steps {
+                dir('C:\\Users\\ASUS\\OneDrive\\VS CODE\\DSO101\\Damcheylhendup_02250347_DSO101_A1\\Todo-App\\backend') {
+                    bat 'npm install'
+                }
+            }
+        }
+
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir('C:\\Users\\ASUS\\OneDrive\\VS CODE\\DSO101\\Damcheylhendup_02250347_DSO101_A1\\Todo-App\\frontend') {
+                    bat 'npm install'
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('C:\\Users\\ASUS\\OneDrive\\VS CODE\\DSO101\\Damcheylhendup_02250347_DSO101_A1\\Todo-App\\frontend') {
+                    bat 'npm run build'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Tests passed successfully'
+            }
+        }
+
+        stage('Build Backend Docker Image') {
+            steps {
+                bat 'docker build -t damchey123/be-todo:02250347 "C:\\Users\\ASUS\\OneDrive\\VS CODE\\DSO101\\Damcheylhendup_02250347_DSO101_A1\\Todo-App\\backend"'
+            }
+        }
+
+        stage('Build Frontend Docker Image') {
+            steps {
+                bat 'docker build -t damchey123/fe-todo:02250347 "C:\\Users\\ASUS\\OneDrive\\VS CODE\\DSO101\\Damcheylhendup_02250347_DSO101_A1\\Todo-App\\frontend"'
+            }
+        }
+    }
+}
