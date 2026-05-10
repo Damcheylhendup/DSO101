@@ -19,12 +19,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Build Backend Docker Image
         working-directory: ./Damcheylhendup_02250347_DSO101_A1/todo-app/backend
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/be-todo:02250347 .
 
-      - name: Push Docker Image
+      - name: Push Backend Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/be-todo:02250347
 
-      - name: Trigger Render Deploy
+      - name: Build Frontend Docker Image
+        working-directory: ./Damcheylhendup_02250347_DSO101_A1/todo-app/frontend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fe-todo:02250347 .
+
+      - name: Push Frontend Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fe-todo:02250347
+
+      - name: Trigger Backend Render Deploy
         run: curl -X POST ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+
+      - name: Trigger Frontend Render Deploy
+        run: curl -X POST ${{ secrets.RENDER_FRONTEND_HOOK }}
