@@ -2,7 +2,8 @@ name: Docker Build Push and Render Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
@@ -18,18 +19,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Backend Image
+      - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/be-todo:02250347 ./backend
+
+      - name: Push Docker Image
+        run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/be-todo:02250347
 
-      - name: Build and Push Frontend Image
+      - name: Trigger Render Deploy
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fe-todo:02250347 ./frontend
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/fe-todo:02250347
-
-      - name: Trigger Backend Render Deploy
-        run: curl -X POST ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
-
-      - name: Trigger Frontend Render Deploy
-        run: curl -X POST ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
